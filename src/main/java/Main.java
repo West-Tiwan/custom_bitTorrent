@@ -5,7 +5,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         String command = args[0];
-        if("decode".equals(command)) {]
+        if("decode".equals(command)) {
             String bencodedValue = args[1];
             Object decoded;
             try {
