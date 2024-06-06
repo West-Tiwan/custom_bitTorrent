@@ -1,49 +1,58 @@
-import com.google.gson.Gson;
 import com.dampcake.bencode.Bencode;
-
+import com.dampcake.bencode.Type;
+import com.google.gson.Gson;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 public class Main {
-  private static final Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
-  public static void main(String[] args) throws Exception {
-    String command = args[0];
-    if("decode".equals(command)) {
-        String bencodedValue = args[1];
-        Object decoded;
-        try {
-          decoded = decodeBencode(bencodedValue);
-        } catch(RuntimeException e) {
-          System.out.println(e.getMessage());
-          return;
-        }
-        if (Character.isDigit(bencodedValue.charAt(0))) {
-          System.out.println(gson.toJson(decoded));
+    public static void main(String[] args) throws Exception {
+        String command = args[0];
+        if ("decode".equals(command)) {
+            String bencodedValue = args[1];
+            String decoded;
+            try {
+                decoded = decodeBencode(bencodedValue);
+            } catch (RuntimeException e) {
+                System.out.println(e.getMessage());
+                return;
+            }
+            System.out.println(decoded);
         } else {
-          System.out.println(gson.toJson(decoded).replaceAll("\"", ""));
+            System.out.println("Unknown command: " + command);
         }
-    } else {
-      System.out.println("Unknown command: " + command);
     }
 
-  }
-
-  static Object decodeBencode(String bencodedString) {
-    if (Character.isDigit(bencodedString.charAt(0))) {
-      int firstColonIndex = 0;
-      for(int i = 0; i < bencodedString.length(); i++) { 
-        if(bencodedString.charAt(i) == ':') {
-          firstColonIndex = i;
-          break;
+    static String decodeBencode(String bencodedString) {
+        Bencode bencode = new Bencode();
+        char firstChar = bencodedString.charAt(0);
+        Object decoded;
+        if (Character.isDigit(bencodedString.charAt(0))) {
+            int firstColonIndex = 1;
+            if (Character.isDigit(firstChar)) {
+                // bencoded string
+                for (int i = 0; i < bencodedString.length(); i++) {
+                    if (bencodedString.charAt(i) == ':') {
+                        firstColonIndex = i;
+                        break;
+                    }
+                }
+                int length = Integer.parseInt(bencodedString.substring(0, firstColonIndex));
+                return gson.toJson(bencodedString.substring(firstColonIndex + 1, firstColonIndex + 1 + length));
+            } else if (Objects.equals(bencodedString.substring(0, 1), "i")) {
+                return gson.toJson(bencode.decode(bencodedString.getBytes(StandardCharsets.UTF_8), Type.NUMBER));
+//                decoded = bencodedString.substring(firstColonIndex + 1,firstColonIndex + 1 + length);
+            } else if (firstChar == 'i') {
+                // bencoded number
+                decoded = bencode.decode(bencodedString.getBytes(StandardCharsets.UTF_8), Type.NUMBER);
+            } else if (firstChar == 'l') {
+                // bencoded list
+                decoded = bencode.decode(bencodedString.getBytes(StandardCharsets.UTF_8), Type.LIST);
+            } else {
+                throw new RuntimeException("Not supported");
+            }
+            return gson.toJson(decoded);
         }
-      }
-      int length = Integer.parseInt(bencodedString.substring(0, firstColonIndex));
-      return bencodedString.substring(firstColonIndex+1, firstColonIndex+1+length);
-    } else if (bencodedString.startsWith("i")) {
-      return Long.parseLong(
-              bencodedString.substring(1, bencodedString.indexOf("e")));
-    } else {
-      String value = bencodedString.replace("i", "").replace("e", "");
-      return value;
+        return bencodedString;
     }
-  }
-  
 }
