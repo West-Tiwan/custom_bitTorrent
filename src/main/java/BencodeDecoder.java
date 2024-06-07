@@ -60,8 +60,8 @@ public class BencodeDecoder {
         current++;
         while (encodedValue.charAt(current) != 'e'){
             dictionary.put(encodedValue.charAt(current), decode());
-            current++;
         }
+        current++;
         return dictionary;
     }
 }
