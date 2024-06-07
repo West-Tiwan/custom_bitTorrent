@@ -3,10 +3,7 @@ import com.dampcake.bencode.Type;
 import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 public class Main {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
     private static final Gson gson = new Gson();
     public static void main(String[] args) throws Exception {
         String command = args[0];
