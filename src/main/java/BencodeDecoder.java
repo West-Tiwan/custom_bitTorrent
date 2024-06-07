@@ -59,7 +59,9 @@ public class BencodeDecoder {
         Dictionary<Object, Object> dictionary = new Hashtable<>();
         current++;
         while (encodedValue.charAt(current) != 'e'){
-            dictionary.put(encodedValue.charAt(current), decode());
+            String k = decode().toString();
+            Object v = decode();
+            dictionary.put(k, v);
         }
         current++;
         return dictionary;
