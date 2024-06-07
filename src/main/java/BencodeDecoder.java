@@ -34,7 +34,7 @@ public class BencodeDecoder {
     }
 
     private Long decodeInteger(){
-        int start = current+1, end = 0;
+        int start = current+2, end = 0;
         for (int i = start; i < encodedValue.length(); i++) {
             if (encodedValue.charAt(i) == 'e') {
                 end = i;
