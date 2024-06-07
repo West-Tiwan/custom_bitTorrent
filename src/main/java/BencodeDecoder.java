@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 public class BencodeDecoder {
@@ -13,6 +15,7 @@ public class BencodeDecoder {
         if (Character.isDigit(encodedValue.charAt(current))) return decodeString();
         if (encodedValue.charAt(current) == 'i') return decodeInteger();
         if (encodedValue.charAt(current) == 'l') return decodeList();
+        if (encodedValue.charAt(current) == 'd') return decodeDictonary();
         return null;
     }
 
@@ -50,5 +53,15 @@ public class BencodeDecoder {
         }
         current++;
         return list;
+    }
+
+    private Dictionary<Object, Object> decodeDictonary() {
+        Dictionary<Object, Object> dictionary = new Hashtable<>();
+        current++;
+        while (encodedValue.charAt(current) != 'e'){
+            dictionary.put(encodedValue.charAt(current), decode());
+            current++;
+        }
+        return dictionary;
     }
 }
