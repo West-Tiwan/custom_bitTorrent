@@ -1,8 +1,11 @@
 import com.dampcake.bencode.Bencode; // - available if you need it!
 import com.dampcake.bencode.Type;
 import com.google.gson.Gson;
+import java.util.Map;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 public class Main {
     private static final Gson gson = new Gson();
     public static void main(String[] args) throws Exception {
@@ -17,10 +20,29 @@ public class Main {
                 return;
             }
             System.out.println(decoded);
+        } else if ("info".equals(command)) {
+            String torrentPath = args[1];
+            Torrent torrent = new Torrent(Files.readAllBytes(Path.of(torrentPath)));
+            System.out.println("Tracker URL: "+torrent.announce);
+            System.out.println("Length: "+torrent.length);
         } else {
             System.out.println("Unknown command: " + command);
         }
     }
+
+    static class Torrent {
+        public String announce;
+        public long length;
+        public Torrent(byte[] bytes) {
+            Bencode bencode = new Bencode();
+            Map<String ,Object> root = bencode.decode(bytes,Type.DICTIONARY);
+            Map<String ,Object> info = (Map<String,Object>) root.get("info");
+
+            announce = (String) root.get("announce");
+            length = (Long) info.get("length");
+        }
+    }
+
     static String decodeBencode(String bencodedString) {
         Bencode bencode = new Bencode();
         char firstChar = bencodedString.charAt(0);
