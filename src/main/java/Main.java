@@ -44,7 +44,8 @@ public class Main {
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] infoHash = md.digest(bytes);
+            String infoString = info.toString();
+            byte[] infoHash = md.digest();
             BigInteger no = new BigInteger(1,infoHash);
             String hashText = no.toString(16);
             System.out.println("Info Hash: "+hashText);
