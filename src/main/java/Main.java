@@ -38,13 +38,16 @@ public class Main {
         public String announce;
         public long length;
         public Torrent(byte[] bytes) throws NoSuchAlgorithmException {
-            Bencode bencode = new Bencode();
+            Bencode bencode = new Bencode(false);
+            Bencode bencode2 = new Bencode(true);
             Map<String ,Object> root = bencode.decode(bytes,Type.DICTIONARY);
             Map<String ,Object> info = (Map<String,Object>) root.get("info");
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] infoHash = md.digest(bencode.encode((Map<String ,Object>) bencode.decode(bytes,Type.DICTIONARY).get("info")));
+            MessageDigest digest2 = MessageDigest.getInstance("SHA-1");
+            byte[] infoHash = digest2.digest(bencode2.encode(
+                    (Map<String, Object>)bencode2.decode(bytes, Type.DICTIONARY)
+                            .get("info")));
             BigInteger no = new BigInteger(1,infoHash);
             String hashText = no.toString(16);
             System.out.println("Info Hash: "+hashText);
