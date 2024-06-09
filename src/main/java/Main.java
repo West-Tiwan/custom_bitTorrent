@@ -44,7 +44,7 @@ public class Main {
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] infoHash = md.digest(bencode.encode((Map<String ,Object>) bencode.decode(bytes,Type.DICTIONARY)));
+            byte[] infoHash = md.digest(bencode.encode((Map<String ,Object>) bencode.decode(bytes,Type.DICTIONARY).get("info")));
             BigInteger no = new BigInteger(1,infoHash);
             String hashText = no.toString(16);
             System.out.println("Info Hash: "+hashText);
