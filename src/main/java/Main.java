@@ -1,10 +1,14 @@
 import com.dampcake.bencode.Bencode; // - available if you need it!
 import com.dampcake.bencode.Type;
 import com.google.gson.Gson;
+
+import java.math.BigInteger;
 import java.util.Map;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 public class Main {
     private static final Gson gson = new Gson();
@@ -33,13 +37,17 @@ public class Main {
     static class Torrent {
         public String announce;
         public long length;
-        public Torrent(byte[] bytes) {
+        public Torrent(byte[] bytes) throws NoSuchAlgorithmException {
             Bencode bencode = new Bencode();
             Map<String ,Object> root = bencode.decode(bytes,Type.DICTIONARY);
             Map<String ,Object> info = (Map<String,Object>) root.get("info");
-
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            byte[] infoHash = md.digest(bytes);
+            BigInteger no = new BigInteger(1,infoHash);
+            String hashText = no.toString(16);
+            System.out.println("Info Hash: "+hashText);
         }
     }
 
