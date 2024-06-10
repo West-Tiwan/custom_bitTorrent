@@ -45,15 +45,15 @@ public class Main {
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
             String pieceLength = (String) info.get("pieceLength");
-            byte[] pieces = (byte[]) info.get("pieces");
+            String pieces = (String) info.get("pieces");
             MessageDigest digest2 = MessageDigest.getInstance("SHA-1");
             byte[] infoHash = digest2.digest(bencode2.encode((Map<String, Object>)bencode2.decode(bytes, Type.DICTIONARY).get("info")));
             BigInteger no = new BigInteger(1,infoHash);
             String hashText = no.toString(16);
             System.out.println("Info Hash: "+hashText);
             System.out.println("Piece Length: "+pieceLength);
-            for (int i = 0; i < pieces.length; i++) {
-                System.out.println(pieces.toString().charAt(i));
+            for (int i = 0; i < pieces.length(); i++) {
+                System.out.println(pieces.charAt(i));
             }
         }
     }
