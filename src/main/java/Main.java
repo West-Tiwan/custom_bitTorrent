@@ -44,7 +44,7 @@ public class Main {
             Map<String ,Object> info = (Map<String,Object>) root.get("info");
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
-            int pieceLength = (int) info.get("pieceLength");
+            String pieceLength = (String) info.get("pieceLength");
             byte[] pieces = (byte[]) info.get("pieces");
             MessageDigest digest2 = MessageDigest.getInstance("SHA-1");
             byte[] infoHash = digest2.digest(bencode2.encode((Map<String, Object>)bencode2.decode(bytes, Type.DICTIONARY).get("info")));
