@@ -49,8 +49,7 @@ public class Main {
             BigInteger no = new BigInteger(1,infoHash);
             String hashText = no.toString(16);
             System.out.println("Info Hash: "+hashText);
-            String pieceLength = (String) info.get("piece length");
-            System.out.println("Piece Length: "+pieceLength);
+            System.out.println("Piece Length: " + info.get("piece length"));
             int i = 0;
             System.out.println("Piece Hashes: ");
             while (i < ((byte[])info.get("pieces")).length) {
