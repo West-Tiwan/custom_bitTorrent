@@ -52,15 +52,19 @@ public class Main {
             System.out.println("Piece Length: " + info.get("piece length"));
             int i = 0;
             System.out.println("Piece Hashes: ");
-            while (i < ((byte[])info.get("pieces")).length) {
-                byte[] splitted =Arrays.copyOfRange((byte[])info.get("pieces"), i, i + 20);
-                BigInteger no1 = new BigInteger(1,splitted);
-                String pieceHash = no1.toString(16);
-                System.out.println(pieceHash);
-                i += 20;
-                if (i < ((byte[])info.get("pieces")).length)
-                    System.out.println();
+            printPieceHashes(info);
+        }
+    }
+
+    private static void printPieceHashes(Map<?,?> infoDict) {
+        var data = (String)infoDict.get("pieces");
+        var bytes = data.getBytes(StandardCharsets.ISO_8859_1);
+        System.out.print("Piece Hashes:");
+        for(int i=0;i<bytes.length; ++i){
+            if(i%20 == 0){
+                System.out.println();
             }
+            System.out.printf("%02x", bytes[i]);
         }
     }
 
