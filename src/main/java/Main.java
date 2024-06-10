@@ -50,8 +50,6 @@ public class Main {
             String hashText = no.toString(16);
             System.out.println("Info Hash: "+hashText);
             System.out.println("Piece Length: " + info.get("piece length"));
-            int i = 0;
-            System.out.println("Piece Hashes: ");
             printPieceHashes(info);
         }
     }
