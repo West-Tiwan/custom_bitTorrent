@@ -44,13 +44,16 @@ public class Main {
             Map<String ,Object> info = (Map<String,Object>) root.get("info");
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
+            int pieceLength = (Integer) info.get("pieceLength");
             MessageDigest digest2 = MessageDigest.getInstance("SHA-1");
-            byte[] infoHash = digest2.digest(bencode2.encode(
-                    (Map<String, Object>)bencode2.decode(bytes, Type.DICTIONARY)
-                            .get("info")));
+            byte[] infoHash = digest2.digest(bencode2.encode((Map<String, Object>)bencode2.decode(bytes, Type.DICTIONARY).get("info")));
             BigInteger no = new BigInteger(1,infoHash);
             String hashText = no.toString(16);
             System.out.println("Info Hash: "+hashText);
+            System.out.println("Piece Length: "+pieceLength);
+            for (int i = 0; i < pieceLength; i++) {
+                System.out.println(info.get("pieces["+i+"]"));
+            }
         }
     }
 
