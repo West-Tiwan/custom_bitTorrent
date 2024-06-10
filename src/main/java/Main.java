@@ -44,15 +44,32 @@ public class Main {
             Map<String ,Object> info = (Map<String,Object>) root.get("info");
             announce = (String) root.get("announce");
             length = (Long) info.get("length");
-            MessageDigest digest2 = MessageDigest.getInstance("SHA-1");
-            byte[] infoHash = digest2.digest(bencode2.encode((Map<String, Object>)bencode2.decode(bytes, Type.DICTIONARY).get("info")));
-            BigInteger no = new BigInteger(1,infoHash);
-            String hashText = no.toString(16);
-            System.out.println("Info Hash: "+hashText);
-            System.out.println("Piece Length: " + info.get("piece length"));
+            var infoHash = calculateHash(info);
+            System.out.printf("Info Hash: %s\n", toHexString(infoHash));
+            System.out.printf("Piece Length: %d\n", (long)info.get("piece length"));
             printPieceHashes(info);
         }
     }
+
+    private static String toHexString(byte[] data) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : data) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    private static byte[] calculateHash(Map<?, ?> infoDict) {
+        var stringEncoded = Bencode.encodeToByteBuff(infoDict);
+        try {
+            var sha1Digest = MessageDigest.getInstance("SHA-1");
+            sha1Digest.update(stringEncoded);
+            return sha1Digest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
 
     private static void printPieceHashes(Map<?,?> infoDict) {
         var data = (String)infoDict.get("pieces");
